@@ -2664,48 +2664,49 @@
       </div>
 
       <!-- Price -->
-      <div class="tile" style="grid-column: 1 / -1; min-height: 0; padding: 0; overflow: hidden; background: #f4f4f6; border-color: var(--line); position: relative;">
+      <style>
+        .pricing-plans { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+        .pricing-plan-check { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+        @media (max-width: 720px) { .pricing-plans { grid-template-columns: 1fr; } }
+      </style>
+      <div class="tile" style="grid-column: 1 / -1; min-height: 0; padding: 0; overflow: hidden; border-color: var(--line); position: relative;">
 
-        <!-- Dot texture -->
-        <div style="position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(15,15,25,0.05) 1px,transparent 1.5px);background-size:26px 26px;pointer-events:none;"></div>
+        <div class="pricing-plans">
 
-        <div style="position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:0;align-items:stretch;">
-
-          <!-- Left: $0 panel -->
-          <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:52px 56px;border-right:1px solid rgba(255,255,255,0.07);gap:14px;background:#f4f4f6;">
-            <div style="font-size:clamp(88px,10vw,136px);font-weight:800;line-height:0.85;letter-spacing:-0.055em;color:#0b0b0f;">$0</div>
-            <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.08);border-radius:999px;padding:6px 14px;white-space:nowrap;">
-              <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;flex-shrink:0;"></span>
-              <span style="font-size:12.5px;font-weight:600;color:rgba(0,0,0,0.65);letter-spacing:0.03em;">Free · always</span>
+          <!-- Free plan -->
+          <div style="display:flex;flex-direction:column;padding:48px 52px;gap:24px;background:#fafafa;border-right:1px solid var(--line);">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2);margin-bottom:16px;">Free</div>
+              <div style="font-size:clamp(60px,7vw,96px);font-weight:800;line-height:0.85;letter-spacing:-0.05em;color:var(--ink);margin-bottom:10px;">$0</div>
+              <div style="font-size:14px;color:var(--muted);">No card required</div>
             </div>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;">
+              <li class="pricing-plan-check" style="color:var(--ink);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>25 free issues</li>
+              <li class="pricing-plan-check" style="color:var(--ink);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Send to Linear and Jira</li>
+              <li class="pricing-plan-check" style="color:var(--ink);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Screenshots &amp; console context</li>
+              <li class="pricing-plan-check" style="color:var(--ink);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>No seats, no setup</li>
+            </ul>
+            <a href="https://chrome.google.com/webstore/detail/nndbailpemdcnccncnpkpdihnaapeihg" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;padding:13px 22px;border-radius:999px;font-size:14px;font-weight:500;text-decoration:none;transition:background .2s ease;align-self:flex-start;">Add to Chrome — Free</a>
           </div>
 
-          <!-- Right: content -->
-          <div style="padding:48px 52px;display:flex;flex-direction:column;justify-content:center;gap:22px;background:#fafafa;">
-            <div>
-              <h3 style="margin:0 0 10px;font-size:clamp(22px,2.6vw,34px);letter-spacing:-0.028em;color:#0b0b0f;line-height:1.1;font-weight:600;">No seats. No caps. No card.</h3>
-              <p style="margin:0;font-size:15.5px;color:#6e6e76;line-height:1.62;max-width:52ch;">The workflow teams get quoted $39–$199/month for. We just don't charge — free during beta, and we'll keep individual use generous if that ever changes.</p>
+          <!-- Pro plan -->
+          <div style="display:flex;flex-direction:column;padding:48px 52px;gap:24px;background:#3A1EFD;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-80px;right:-80px;width:240px;height:240px;background:rgba(255,255,255,0.06);border-radius:50%;pointer-events:none;"></div>
+            <div style="position:relative;z-index:1;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:16px;">Pro</div>
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;">
+                <span style="font-size:clamp(60px,7vw,96px);font-weight:800;line-height:0.85;letter-spacing:-0.05em;color:#fff;">$5</span>
+                <span style="font-size:16px;color:rgba(255,255,255,0.6);">/ month</span>
+              </div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.6);">or $30 / year &mdash; save 50%</div>
             </div>
-
-            <!-- Stat cards -->
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-              <div style="background:#fff;border:1px solid rgba(15,15,25,0.08);border-radius:16px;padding:18px 20px;">
-                <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a9aa2;margin-bottom:7px;">Seats</div>
-                <div style="font-size:20px;font-weight:700;color:#0b0b0f;letter-spacing:-0.02em;">Unlimited</div>
-              </div>
-              <div style="background:#fff;border:1px solid rgba(15,15,25,0.08);border-radius:16px;padding:18px 20px;">
-                <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a9aa2;margin-bottom:7px;">Usage cap</div>
-                <div style="font-size:20px;font-weight:700;color:#0b0b0f;letter-spacing:-0.02em;">None</div>
-              </div>
-              <div style="background:#fff;border:1px solid rgba(15,15,25,0.08);border-radius:16px;padding:18px 20px;">
-                <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a9aa2;margin-bottom:7px;">Credit card</div>
-                <div style="font-size:20px;font-weight:700;color:#0b0b0f;letter-spacing:-0.02em;">Never</div>
-              </div>
-              <div style="background:#fff;border:1px solid rgba(15,15,25,0.08);border-radius:16px;padding:18px 20px;">
-                <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a9aa2;margin-bottom:7px;">Monthly price</div>
-                <div style="font-size:20px;font-weight:700;color:#0b0b0f;letter-spacing:-0.02em;">$0.00</div>
-              </div>
-            </div>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;position:relative;z-index:1;">
+              <li class="pricing-plan-check" style="color:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Unlimited issues</li>
+              <li class="pricing-plan-check" style="color:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Send to Linear and Jira</li>
+              <li class="pricing-plan-check" style="color:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Custom tracker labels</li>
+              <li class="pricing-plan-check" style="color:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Priority support</li>
+            </ul>
+            <a href="https://chrome.google.com/webstore/detail/nndbailpemdcnccncnpkpdihnaapeihg" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#3A1EFD;padding:13px 22px;border-radius:999px;font-size:14px;font-weight:600;text-decoration:none;align-self:flex-start;position:relative;z-index:1;">Upgrade to Pro</a>
           </div>
 
         </div>
@@ -2988,8 +2989,8 @@
 <section class="section" id="compare" data-screen-label="Compare">
   <div class="wrap">
     <div class="section-head">
-      <h2>What you'd usually pay for.<br><span class="accent">Free.</span></h2>
-      <p class="section-sub">The workflow your team has been quoted $39–$199/month for. We just don't charge.</p>
+      <h2>What you'd usually pay $39–$199 for.<br><span class="accent">We charge $5.</span></h2>
+      <p class="section-sub">No per-seat billing. No website caps. No complex setup.</p>
     </div>
 
     <div class="compare">
@@ -3090,8 +3091,8 @@
 
     <div class="faq-list">
       <details class="faq-item" open="">
-        <summary>Is it really free?<span class="plus" aria-hidden="true">+</span></summary>
-        <div class="faq-answer">Yes. The whole extension, free. No seats, no usage caps, no card. If we ever charge for a team plan later, individual use stays generous and beta users get a long runway.</div>
+        <summary>What's the difference between Free and Pro?<span class="plus" aria-hidden="true">+</span></summary>
+        <div class="faq-answer">The free plan includes 25 issues — no card required, no time limit. Pro is $5/month (or $30/year) and removes the issue limit completely. Both plans let you send to Linear and Jira with no seat fees.</div>
       </details>
       <details class="faq-item">
         <summary>Where does my data go?<span class="plus" aria-hidden="true">+</span></summary>
