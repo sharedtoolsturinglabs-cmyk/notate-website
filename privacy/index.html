@@ -395,7 +395,7 @@ footer {
     </span>
     <h1>Privacy Policy</h1>
     <p class="sub">Notate is built privacy-first. Your annotations live on your own device, and nothing leaves it unless you choose to export it to a tool you've connected.</p>
-    <p class="updated">Last updated: July 14, 2026</p>
+    <p class="updated">Last updated: July 15, 2026</p>
   </div>
 </div>
 
@@ -409,7 +409,8 @@ footer {
         <ul>
           <li>Your pins, comments, screenshots, and any screen recordings are stored <strong>locally in your browser</strong> — not on our servers.</li>
           <li>When you export feedback, it goes <strong>only to the tool you connected</strong> (Linear or Jira) and to no one else.</li>
-          <li>We use <strong>Sentry</strong> for crash and error reports so we can fix bugs. It never receives your annotation content.</li>
+          <li>Notate collects <strong>anonymous usage analytics by default</strong> — event names, workspace id, tracker type, and durations only, never your ticket content, screenshots, or recordings. You can turn it off in Settings → Workspace → Privacy.</li>
+          <li>We use <strong>Sentry</strong> for crash and error reports, kept separate from usage analytics and <strong>off unless you opt in</strong>. It never receives your annotation content.</li>
           <li>If you upgrade to <strong>Pro</strong>, payment is handled by our processor, <strong>Dodo Payments</strong> — we don't see or store your full card details.</li>
           <li>We <strong>don't run ad trackers, sell your data, or build a profile</strong> on you.</li>
           <li>Uninstalling Notate removes the data it stored on your device.</li>
@@ -426,15 +427,18 @@ footer {
       <h2 class="heading">3. Screen recording</h2>
       <p>Notate includes a screen recording feature (currently behind a feature flag, off by default). This section explains how it works before it is enabled for any users.</p>
 
+      <h3>How a recording starts</h3>
+      <p>Recording is always <strong>user-initiated</strong> — nothing records automatically or silently. You start a recording with an explicit record action, Notate shows an on-page countdown before capture begins, and a visible recording bar stays on screen for the entire duration so it's always clear when you're being recorded.</p>
+
       <h3>What is captured</h3>
-      <p>When you start a recording, Notate uses the browser's <strong><code>chrome.tabCapture</code></strong> API to capture video of your active browser tab. This is a browser-level permission — it does not inject a script into the pages you visit or access any other tab, window, or screen. You grant it in the moment you start a recording; it is not active in the background.</p>
+      <p>When you start a recording, Notate uses the browser's <strong><code>chrome.tabCapture</code></strong> API to capture video of your <strong>current browser tab only</strong>. This is a browser-level permission — it does not inject a script into the pages you visit or access any other tab, window, or screen. You grant it in the moment you start a recording; it is not active in the background.</p>
 
       <h3>Where the recording goes</h3>
-      <p>Recordings are held <strong>in your browser's memory</strong> until you attach one to a ticket and push it to your project tracker (Jira or Linear). We do not upload, store, or process your recordings on any Notate server. This is a deliberate exception to the cloud-workspace sync behaviour described in section 4: even if you are using a shared workspace where comments and screenshots may sync, recordings are <strong>never</strong> auto-synced to any Notate backend.</p>
+      <p>Recordings are held <strong>locally in your browser</strong> until you attach one to a ticket and explicitly push it to your project tracker (Jira or Linear), where it is uploaded as an attachment. We do not upload, store, or process your recordings on any Notate server. This is a deliberate exception to the cloud-workspace sync behaviour described in section 4: our sync layer explicitly blocks video from cloud sync, so even if you are using a shared workspace where comments and screenshots may sync, recordings are <strong>never</strong> auto-synced to any Notate backend. A clip only ever leaves your device when you choose to send it to your own connected tracker.</p>
       <p>Recordings are cleared from your device when you close the Notate side panel or the browser session ends.</p>
 
       <h3>Audio</h3>
-      <p>Audio is <strong>off by default</strong>. Microphone access and tab audio capture are only enabled if you explicitly turn them on in Notate's settings. If you enable microphone access, the browser will prompt you for that permission at the moment you turn the setting on — not at install time. You can revoke microphone access at any time from your browser's site permissions.</p>
+      <p>Microphone audio is <strong>optional and off by default</strong>. It is gated by two separate controls: you must explicitly turn on microphone or tab-audio capture in Notate's settings, <strong>and</strong> grant Chrome's own microphone permission prompt, which appears at the moment you turn the setting on — not at install time. You can revoke microphone access at any time from your browser's site permissions.</p>
 
       <h2 class="heading">4. Tools you connect (Linear &amp; Jira)</h2>
       <p>Notate lets you send feedback to a third-party issue tracker. We currently support <strong>Linear</strong> and <strong>Jira</strong>. These integrations are entirely optional and only do anything once you choose to connect an account and export an item.</p>
@@ -450,37 +454,44 @@ footer {
       <p>If you upgrade to Notate Pro, your payment is handled by our payment processor, <strong>Dodo Payments</strong>, not by Notate directly. Dodo collects and processes the billing details needed to complete your purchase — such as your card information, billing email, and transaction history — under its own privacy policy and PCI-compliant infrastructure. Notate does not receive or store your full card number.</p>
       <p>We retain the minimum account information needed to identify your subscription (such as your subscription status and billing email) so the extension can confirm your Pro access. You can view, manage, or cancel your subscription at any time from the extension's Settings → Billing.</p>
 
-      <h2 class="heading">6. Crash and error reporting (Sentry)</h2>
+      <h2 class="heading">6. Anonymous usage analytics</h2>
+      <p>Notate collects anonymous usage events to help us understand how the product is used and where to improve it. As of <strong>July 10, 2026</strong>, this is <strong>on by default</strong> — you can turn it off, but it isn't opt-in.</p>
+      <p>The events we collect are limited to <code>session_start</code>, <code>pin_created</code>, <code>tracker_push</code>, and <code>panel_time_spent</code>. Each event carries <strong>metadata only</strong> — the event name, a workspace identifier, which tracker you're connected to, and durations. These events <strong>never</strong> include your ticket content, screenshots, recordings, or the content of the pages you visit.</p>
+      <p>You can turn this off at any time from <strong>Settings → Workspace → Privacy → "Share anonymous usage data."</strong> Turning it off stops future events from being sent.</p>
+      <p>This is separate from crash and error reporting (see the next section), which remains <strong>off unless you opt in</strong>.</p>
+      <p>Usage analytics data is processed by our sub-processors, <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase</a> (our backend database) and, if configured for your workspace, <a href="https://posthog.com/privacy" target="_blank" rel="noopener">PostHog</a>. Both process this data solely to help us operate and improve Notate.</p>
+
+      <h2 class="heading">7. Crash and error reporting (Sentry)</h2>
       <p>To find and fix bugs, Notate uses <a href="https://sentry.io" target="_blank" rel="noopener">Sentry</a> for crash and error reporting. When something goes wrong, Sentry may receive technical diagnostic data such as the error message and stack trace, the extension version, your browser and operating system type and version, and a timestamp. Sentry may also process your IP address transiently as a normal part of receiving the report.</p>
       <p>We use this data only to diagnose and fix problems. We do <strong>not</strong> send your annotation content, screenshots, or the contents of the pages you visit to Sentry. For details on how Sentry processes data, see the <a href="https://sentry.io/privacy/" target="_blank" rel="noopener">Sentry Privacy Policy</a>.</p>
 
-      <h2 class="heading">7. Browser permissions</h2>
+      <h2 class="heading">8. Browser permissions</h2>
       <p>To do its job, the extension requests the browser permissions needed to capture the current page, take screenshots of it, and store your feedback locally. These permissions are used solely to deliver Notate's features on the page you're actively working on. We do not use them to monitor your browsing or collect data in the background.</p>
 
-      <h2 class="heading">8. This website</h2>
+      <h2 class="heading">9. This website</h2>
       <p>This site is a static page hosted on GitHub Pages. It does not run analytics, advertising, or third-party tracking cookies.</p>
       <p>As with any website, the hosting provider (GitHub) may automatically log standard technical request information, such as IP address and browser type, to serve and protect the site. That processing is governed by <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub's privacy statement</a>.</p>
 
-      <h2 class="heading">9. What we don't do</h2>
+      <h2 class="heading">10. What we don't do</h2>
       <ul>
         <li>We don't sell or rent your data to anyone.</li>
         <li>We don't use advertising trackers or build an advertising profile of you.</li>
-        <li>We don't run usage analytics that identify you.</li>
+        <li>We don't tie usage analytics to your identity, and we never include your ticket content, screenshots, or recordings in it.</li>
         <li>We don't access or store your annotations on our own servers.</li>
         <li>We don't store your full card or payment details — that's handled by Dodo Payments.</li>
       </ul>
 
-      <h2 class="heading">10. Data retention &amp; your choices</h2>
+      <h2 class="heading">11. Data retention &amp; your choices</h2>
       <p>Because your feedback is stored locally, <strong>you control it</strong>. You can delete individual items in the extension, clear it through your browser's site/extension data controls, or remove all of it by uninstalling Notate. Data you've already exported to Linear or Jira lives in those tools and is managed there.</p>
       <p>Depending on where you live, you may have rights under laws such as the GDPR or CCPA — including the right to access, correct, or delete personal data, and to object to certain processing. Since Notate keeps your content on your own device, you can exercise most of these directly. For anything else, contact us using the details below.</p>
 
-      <h2 class="heading">11. Children</h2>
+      <h2 class="heading">12. Children</h2>
       <p>Notate is a productivity tool intended for a general, professional audience. It is not directed to children, and we do not knowingly collect personal information from children.</p>
 
-      <h2 class="heading">12. Changes to this policy</h2>
+      <h2 class="heading">13. Changes to this policy</h2>
       <p>We may update this policy as Notate evolves. When we do, we'll revise the "Last updated" date at the top of this page. Significant changes will be reflected here before they take effect.</p>
 
-      <h2 class="heading">13. Contact us</h2>
+      <h2 class="heading">14. Contact us</h2>
       <p>Questions about this policy or your data? Email us at <a href="mailto:notate.developer@gmail.com">notate.developer@gmail.com</a> and we'll get back to you.</p>
 
     </div>
