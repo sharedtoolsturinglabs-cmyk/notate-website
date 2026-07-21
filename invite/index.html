@@ -373,19 +373,16 @@
     }
 
     // Show an explicit "no extension here" state instead of silently dropping
-    // into the in-page sign-in flow. The install link points at the Chrome
-    // Web Store listing for the configured extension id; the fallback button
-    // preserves the in-browser sign-in path for non-Chrome browsers (and
-    // anyone who'd rather not install).
+    // into the in-page sign-in flow. The install link points at the Notate
+    // extension's canonical install URL; the fallback button preserves the
+    // in-browser sign-in path for non-Chrome browsers (and anyone who'd
+    // rather not install).
     function showNoExtension() {
       show("no-extension");
       setStatus("");
       const installBtn = $("install-ext-btn");
       const fallbackBtn = $("no-ext-fallback-btn");
-      const id = CFG.EXTENSION_ID;
-      installBtn.href = (id && !id.startsWith("REPLACE_"))
-        ? ("https://chromewebstore.google.com/detail/" + id)
-        : "https://chromewebstore.google.com/";
+      installBtn.href = "https://tinyurl.com/notatelive";
       fallbackBtn.onclick = () => { runPageFlow(); };
     }
 
