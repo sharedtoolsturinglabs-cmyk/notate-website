@@ -461,18 +461,96 @@ header {
 .ncard-send svg { width: 13px; height: 13px; }
 .ncard:hover .ncard-send, .ncard.armed .ncard-send { opacity: 1; }
 .ncard-send[hidden] { display: none; }
-.ncard-filed {
-  display: inline-flex; align-items: center; gap: 7px;
-  margin: 0 14px 12px; height: 20px; padding: 0 9px; border-radius: 999px;
-  background: var(--n-muted); color: oklch(0.36 0.006 286);
-  font: 500 11.5px/1 var(--font); width: fit-content;
+.ncard.filed .ncard-send { display: none; }
+
+/* Card controls: selection checkbox / filed badge (top-left), nav+kebab (top-right) */
+.nc-check {
+  position: absolute; left: 10px; top: 10px; z-index: 4;
+  width: 15px; height: 15px; border-radius: 5px;
+  border: 1.5px solid var(--n-border); background: var(--n-card);
+  opacity: 0.7; transition: opacity .15s ease, border-color .15s ease;
 }
-.ncard-filed[hidden] { display: none; }
-.fcheck {
+.ncard:hover .nc-check { opacity: 1; }
+.nc-check:hover { border-color: oklch(0.7 0.01 286); }
+.ncard.filed .nc-check { display: none; }
+.nc-filed {
+  position: absolute; left: 10px; top: 10px; z-index: 4;
+  display: none; align-items: center; gap: 6px;
+  height: 20px; padding: 0 8px; border-radius: 999px;
+  background: var(--n-muted); color: oklch(0.21 0.006 286);
+  font: 500 11.5px/1 var(--font);
+}
+.nc-tlogo { width: 12px; height: 12px; flex-shrink: 0; }
+.ncard.filed .nc-filed { display: inline-flex; }
+.nc-filed.pop { animation: filedPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+.nc-controls {
+  position: absolute; right: 8px; top: 8px; z-index: 5;
+  display: flex; gap: 2px;
+  opacity: 0; transition: opacity .15s ease;
+}
+.ncard:hover .nc-controls, .nc-controls.menu-open { opacity: 1; }
+.ncard.filed .nc-controls .dp-menu-wrap { display: none; }
+.nc-icon {
+  width: 30px; height: 30px; border: 0; cursor: pointer; border-radius: 8px;
+  background: oklch(1 0 0 / 0.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  color: var(--n-muted-fg);
   display: inline-flex; align-items: center; justify-content: center;
-  width: 15px; height: 15px; border-radius: 50%;
-  background: var(--n-success); color: #fff; font-size: 10px;
+  transition: background .14s ease, color .14s ease;
 }
+.nc-icon svg { width: 17px; height: 17px; }
+.nc-icon:hover { background: var(--n-card); color: var(--n-fg); }
+
+/* Dropdown menus (header + card) — the extension's rounded-2xl menu */
+.dp-menu-wrap { position: relative; display: inline-flex; }
+.dp-menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 30;
+  min-width: 200px;
+  background: var(--n-card); border-radius: 18px; padding: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid oklch(0.141 0.005 285.823 / 0.06);
+}
+.dp-menu[hidden] { display: none; }
+.nc-menu { min-width: 186px; }
+.dp-mi {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 10px; border: 0; background: none; cursor: pointer;
+  border-radius: 12px; text-align: left;
+  font: 450 14px/1.2 var(--font); color: var(--n-fg);
+  transition: background .1s ease;
+}
+.dp-mi svg { width: 18px; height: 18px; color: var(--n-muted-fg); flex-shrink: 0; }
+.dp-mi:hover { background: var(--n-muted); }
+.dp-mi:active { transform: scale(0.98); }
+.dp-mi.accent svg { color: var(--n-fg); }
+.dp-mi.danger { color: var(--n-red); }
+.dp-mi.danger svg { color: var(--n-red); }
+.dp-mi.danger:hover { background: color-mix(in oklab, var(--n-red) 9%, var(--n-card)); }
+.dp-sep { height: 1px; background: oklch(0.92 0.004 286.32 / 0.7); margin: 6px -6px; }
+
+/* Header page-filter chip + usage ring */
+.dp-filter {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 200px; min-width: 0;
+  height: 28px; padding: 0 10px; border-radius: 9px; cursor: pointer;
+  border: 1px solid var(--n-border); background: var(--n-card);
+  font: 500 12.8px/1 var(--font); color: var(--n-fg);
+  transition: background .14s ease;
+}
+.dp-filter:hover { background: var(--n-muted); }
+.dp-favi { width: 14px; height: 14px; color: var(--n-muted-fg); flex-shrink: 0; }
+.dp-filter-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dp-chev { width: 14px; height: 14px; color: var(--n-muted-fg); flex-shrink: 0; margin-left: 2px; }
+.dp-ring { pointer-events: none; }
+.dp-ring svg { width: 16px; height: 16px; color: oklch(0.7 0.008 286); }
+
+/* Panel footer — Notate · ♥ · v */
+.dp-foot {
+  flex-shrink: 0; padding: 10px 0;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font: 500 10px/1 var(--font); letter-spacing: 0.04em;
+  color: var(--n-muted-fg); opacity: 0.75;
+  border-top: 1px solid oklch(0.92 0.004 286.32 / 0.5);
+}
+.dp-heart { color: #e5484d; font-size: 12px; line-height: 1; }
 
 /* The captured screenshot: a lift-shadowed white shot of the broken headline. */
 .clip-snap {
@@ -1283,7 +1361,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 
 .dockpanel {
   position: fixed; top: 0; right: 0; bottom: 0;
-  width: min(390px, 92vw);
+  width: min(404px, 94vw);
   background: var(--n-card);
   border-left: 1px solid var(--n-border);
   box-shadow: -30px 0 80px -40px oklch(0.2 0.03 265 / 0.45);
@@ -1301,6 +1379,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 .dp-head {
   display: flex; align-items: center; justify-content: space-between;
   height: 52px; flex-shrink: 0; padding: 0 10px 0 14px;
+  position: relative; z-index: 40;
   border-bottom: 1px solid oklch(0.92 0.004 286.32 / 0.7);
   background: oklch(1 0 0 / 0.8);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -1329,10 +1408,9 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 .dockpanel .ncard.landing { animation: cardLand .6s cubic-bezier(.34, 1.56, .64, 1) both; }
 
 /* filed badge shine sweep — a little flourish on success */
-.ncard-filed { position: relative; overflow: hidden; }
-.ncard-filed.pop { animation: filedPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+.nc-filed { position: absolute; overflow: hidden; }
 @keyframes filedPop { 0% { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
-.ncard-filed.pop::after {
+.nc-filed.pop::after {
   content: ''; position: absolute; top: 0; left: -60%; width: 45%; height: 100%;
   background: linear-gradient(100deg, transparent, oklch(1 0 0 / 0.7), transparent);
   transform: skewX(-18deg); animation: filedShine .8s ease .15s 1;
@@ -1382,8 +1460,6 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
   .snap-flash, .ncomposer { display: none !important; }
   .hero h1 .accent.acc-broken { transform: none; }
   .hero h1 .accent.acc-broken::after { display: none; }
-  .ncard-send { opacity: 0 !important; }
-  .ncard-filed { display: inline-flex !important; }
   .dockpanel { transition: none; }
 }
 </style>
@@ -1471,25 +1547,50 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
      slides in, the comment card flies into it, then it minimizes to the FAB. -->
 <div class="dp-scrim" id="dpScrim"></div>
 <aside class="dockpanel" id="dockPanel" aria-hidden="true" aria-label="Notate side panel">
+  <!-- Header: page filter · usage ring · feedback · options · minimize -->
   <div class="dp-head">
-    <span class="dp-brand">
-      <span class="dp-logo" aria-hidden="true">
-        <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="180" rx="39" fill="#0a0a0c"/><path d="M63.66 135.87c-4.2 0-7.39-1.3-9.58-3.91-2.18-2.6-3.28-6.09-3.28-10.46V62.41c0-4.37.8-7.9 2.39-10.58 1.68-2.78 3.82-4.79 6.43-6.05 2.68-1.26 5.58-1.89 8.69-1.89 4.62 0 8.53 1.22 11.72 3.66 3.19 2.43 5.67 6.72 7.44 12.85l13.6 46.49h2.02V58.5c0-4.45 1.13-7.94 3.4-10.46 2.27-2.6 5.5-3.9 9.7-3.9 4.37 0 7.6 1.3 9.7 3.9 2.19 2.52 3.28 6.01 3.28 10.46v56.95c0 7.06-1.55 12.26-4.66 15.62-3.11 3.36-7.48 5.04-13.1 5.04-5.72 0-10.17-1.51-13.36-4.54-3.19-3.02-5.63-7.47-7.31-13.35L82.7 105.6c-.17-.84-.5-1.6-1.01-2.27-.42-.76-1-1.14-1.76-1.14-.92 0-1.55.38-1.89 1.14-.34.67-.5 1.43-.5 2.27v33.35c0 4.37-1.09 7.86-3.27 10.46-2.19 2.6-5.42 3.91-9.71 3.91Z" fill="#fff"/></svg>
-      </span>
-      Notate
-    </span>
+    <button class="dp-filter" type="button" aria-label="Filter by page">
+      <svg class="dp-favi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span class="dp-filter-label">notate.live</span>
+      <svg class="dp-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
     <div class="dp-head-actions">
-      <button class="dp-icon" id="replayBtn" hidden aria-label="Replay the demo" title="Replay">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-5.5"/></svg>
+      <span class="dp-icon dp-ring" title="Issue usage" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-opacity="0.22" stroke-width="2"/><circle cx="8" cy="8" r="7" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-dasharray="26 18" transform="rotate(-90 8 8)"/></svg>
+      </span>
+      <button class="dp-icon" title="Send feedback" aria-label="Send feedback">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </button>
+      <div class="dp-menu-wrap">
+        <button class="dp-icon" id="dpKebab" aria-label="Panel options" aria-expanded="false" aria-haspopup="menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
+        <div class="dp-menu" id="dpMenu" role="menu" hidden>
+          <button class="dp-mi accent" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>Go Pro</button>
+          <div class="dp-sep"></div>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 10 8 10 8a13.2 13.2 0 0 1-1.67 2.68"/><path d="M6.6 6.6A13.3 13.3 0 0 0 2 12s3 8 10 8a9.3 9.3 0 0 0 5.4-1.6"/><path d="m2 2 20 20"/></svg>Hide pins</button>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>Collapse all</button>
+          <div class="dp-sep"></div>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Publish to web</button>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>Shortcuts</button>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+          <div class="dp-sep"></div>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>Tell your friends</button>
+          <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h2a2 2 0 1 0 0-4h-3l-2.5 2.5"/><path d="m7 15 2.5 2.5"/><path d="M20.9 12.6 12 21l-8.5-8.5a3.5 3.5 0 0 1 5-5l.5.5.5-.5a3.5 3.5 0 0 1 5 0"/></svg>Support us</button>
+          <div class="dp-sep"></div>
+          <button class="dp-mi" id="replayBtn" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 3-5.5"/></svg>Replay demo</button>
+        </div>
+      </div>
       <button class="dp-icon" id="dpMin" aria-label="Minimize panel" title="Minimize">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
       </button>
     </div>
   </div>
+
+  <!-- Tabs -->
   <div class="npanel-tabs">
     <button class="np-tab on" id="npTabDrafts">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9M10 13h4"/></svg>
       Drafts <b id="draftsN">1</b>
     </button>
     <button class="np-tab" id="npTabSent">
@@ -1497,8 +1598,24 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       Sent <b id="sentN">0</b>
     </button>
   </div>
+
+  <!-- Comment list -->
   <div class="npanel-list" id="npList">
     <article class="ncard" id="panelCard">
+      <span class="nc-check" aria-hidden="true"></span>
+      <span class="nc-filed" id="cardFiled"><svg class="nc-tlogo" viewBox="0 0 100 100" aria-hidden="true"><path fill="#5E6AD2" d="M1.2 61.5a48.9 48.9 0 0 0 37.3 37.3c1 .3 1.6-.9.9-1.6L2.8 60.6c-.7-.7-1.9-.1-1.6.9zM0 46.9c0 .3.1.5.3.7L52.4 99.7c.2.2.4.3.7.3 2.4-.1 4.7-.5 6.9-.9.8-.2 1-1.1.5-1.6L2.6 39.4c-.5-.5-1.5-.3-1.6.5-.5 2.3-.8 4.6-.9 6.9zM4.2 29.7c-.2.4-.1.8.2 1.1l64.8 64.8c.3.3.7.4 1.1.2 1.8-.8 3.5-1.7 5.2-2.7.6-.3.6-1.1.2-1.5L8.4 24.3c-.4-.4-1.2-.4-1.5.2-1 1.7-1.9 3.4-2.7 5.2zM12.7 18.1a1 1 0 0 1 0-1.4C21.8 6.5 35.1 0 50 0c27.6 0 50 22.4 50 50 0 14.8-6.5 28.2-16.7 37.3-.4.4-1 .3-1.4 0L12.7 18.1z"/></svg><span id="linOut">LIN-247</span></span>
+      <div class="nc-controls">
+        <button class="nc-icon" title="Go to element" aria-label="Go to element"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+        <div class="dp-menu-wrap">
+          <button class="nc-icon" id="cardKebab" aria-label="Comment options" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+          <div class="dp-menu nc-menu" id="cardMenu" role="menu" hidden>
+            <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg>Send to Linear</button>
+            <button class="dp-mi" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>Edit</button>
+            <div class="dp-sep"></div>
+            <button class="dp-mi danger" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Delete</button>
+          </div>
+        </div>
+      </div>
       <div class="ncard-shot">
         <div class="clip-snap">
           <div class="snap-h1">into Jira tickets</div>
@@ -1514,9 +1631,11 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg>
         Send to Linear
       </button>
-      <span class="ncard-filed" id="cardFiled" hidden><span class="fcheck">✓</span>Filed as <span id="linOut">LIN-247</span></span>
     </article>
   </div>
+
+  <!-- Footer -->
+  <div class="dp-foot" aria-hidden="true">Notate <span class="dp-heart">♥</span> v0.9</div>
 </aside>
 <button class="fab" id="fab" aria-label="Open the Notate panel" hidden>
   <span class="fab-badge" id="fabBadge" hidden>1</span>
@@ -2188,20 +2307,17 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
     function fileComment() {
       var id = 'LIN-' + n;
       if (linOut) linOut.textContent = id;
-      cardSend.hidden = true;
-      cardFiled.hidden = false;
-      cardFiled.classList.remove('pop'); void cardFiled.offsetWidth; cardFiled.classList.add('pop');
+      panelCard.classList.add('filed');
       panelCard.classList.remove('armed');
+      cardFiled.classList.remove('pop'); void cardFiled.offsetWidth; cardFiled.classList.add('pop');
       draftsN.textContent = '0';
       sentN.textContent = '1';
       tabDrafts.classList.remove('on');
       tabSent.classList.add('on');
     }
     function resetPanel() {
-      cardSend.hidden = false;
-      cardFiled.hidden = true;
+      panelCard.classList.remove('filed', 'armed', 'landing');
       cardFiled.classList.remove('pop');
-      panelCard.classList.remove('armed', 'landing');
       draftsN.textContent = '1';
       sentN.textContent = '0';
       tabDrafts.classList.add('on');
@@ -2309,6 +2425,42 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       settleEnd();
     }
   }
+})();
+
+// Panel dropdown menus (header kebab + card kebab)
+(function () {
+  function closeAll() {
+    document.querySelectorAll('.dp-menu:not([hidden])').forEach(function (m) {
+      m.setAttribute('hidden', '');
+      var b = document.getElementById(m.getAttribute('data-btn'));
+      if (b) b.setAttribute('aria-expanded', 'false');
+    });
+    document.querySelectorAll('.nc-controls.menu-open').forEach(function (c) {
+      c.classList.remove('menu-open');
+    });
+  }
+  function wire(btnId, menuId) {
+    var btn = document.getElementById(btnId), menu = document.getElementById(menuId);
+    if (!btn || !menu) return;
+    menu.setAttribute('data-btn', btnId);
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var willOpen = menu.hasAttribute('hidden');
+      closeAll();
+      if (willOpen) {
+        menu.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        var c = btn.closest('.nc-controls');
+        if (c) c.classList.add('menu-open');
+      }
+    });
+  }
+  wire('dpKebab', 'dpMenu');
+  wire('cardKebab', 'cardMenu');
+  document.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+  });
 })();
 
 // Mobile menu
