@@ -623,18 +623,18 @@ header {
   position: relative; flex: 1 1 0; min-width: 0;
   background: var(--panel); border: 1px solid var(--hair);
   border-radius: 20px; overflow: hidden; cursor: pointer;
-  transition: flex-grow .55s cubic-bezier(.22,1,.36,1), background .4s ease, border-color .4s ease, box-shadow .4s ease;
+  transition: flex-grow .42s cubic-bezier(.22,1,.36,1), background .42s ease, border-color .42s ease, box-shadow .42s ease;
 }
 .hcard:not(.is-active):hover { border-color: var(--hair); background: #fff; }
 .hcard.is-active {
-  flex-grow: 2.7; cursor: default;
+  flex-grow: 2; cursor: default;
   background: #f2f0ff; border-color: rgba(58,30,253,0.14);
   box-shadow: 0 12px 40px -18px rgba(58,30,253,0.35);
 }
 /* progress bar (drives auto-advance via animationend) */
 .hcard-prog { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; z-index: 3; }
 .hcard-prog i { display: block; height: 100%; width: 0; background: var(--indigo); border-radius: 0 3px 3px 0; }
-.hcard.is-active .hcard-prog i { animation: how3fill 4s linear forwards; }
+.hcard.is-active .hcard-prog i { animation: how3fill 2.4s linear forwards; }
 @keyframes how3fill { from { width: 0; } to { width: 100%; } }
 .how3:hover .hcard.is-active .hcard-prog i,
 .how3.paused .hcard.is-active .hcard-prog i { animation-play-state: paused; }
@@ -724,11 +724,43 @@ header {
   padding: 4px 11px; border-radius: 7px; border: 1px solid var(--hair); background: var(--bg);
 }
 .hm-chips span:first-child { color: var(--indigo); border-color: rgba(58,30,253,0.22); background: rgba(58,30,253,0.05); }
+/* ── Content choreography: mockup children stagger in as the card expands ── */
+@keyframes hmEnter { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes hmPop { 0% { opacity: 0; transform: scale(.4); } 60% { opacity: 1; transform: scale(1.12); } 100% { opacity: 1; transform: scale(1); } }
+/* only the active card animates; class re-add on each cycle restarts the stagger */
+.hcard.is-active .hm-bar,
+.hcard.is-active .hm-wire, .hcard.is-active .hm-btn, .hcard.is-active .hm-sel,
+.hcard.is-active .hm-rows li,
+.hcard.is-active .hm-lin, .hcard.is-active .hm-tk-title, .hcard.is-active .hm-tk-shot, .hcard.is-active .hm-chips {
+  animation: hmEnter .26s cubic-bezier(.22,1,.36,1) both;
+}
+/* card 1 — pin browser: bar → wire → button → selector → pin(pop/drop) */
+.hcard.is-active .hm-bar   { animation-delay: .12s; }
+.hcard.is-active .hm-wire  { animation-delay: .18s; }
+.hcard.is-active .hm-btn   { animation-delay: .24s; }
+.hcard.is-active .hm-sel   { animation-delay: .30s; }
+.hcard.is-active .hm-pin   { animation: hmPop .28s cubic-bezier(.22,1,.36,1) .36s both; transform-origin: bottom center; }
+/* card 2 — metadata rows: bar → Browser → Viewport → URL → Console, red count pops */
+.hcard.is-active .hm-rows li:nth-child(1) { animation-delay: .18s; }
+.hcard.is-active .hm-rows li:nth-child(2) { animation-delay: .24s; }
+.hcard.is-active .hm-rows li:nth-child(3) { animation-delay: .30s; }
+.hcard.is-active .hm-rows li:nth-child(4) { animation-delay: .36s; }
+.hm-rows .err { display: inline-block; }
+.hcard.is-active .hm-rows .err { animation: hmPop .28s cubic-bezier(.22,1,.36,1) .44s both; transform-origin: right center; }
+/* card 3 — filed ticket: LIN → title → shot → chips → green ✓ pops last */
+.hcard.is-active .hm-lin      { animation-delay: .12s; }
+.hcard.is-active .hm-tk-title { animation-delay: .19s; }
+.hcard.is-active .hm-tk-shot  { animation-delay: .25s; }
+.hcard.is-active .hm-chips    { animation-delay: .31s; }
+.hcard.is-active .hm-sent     { animation: hmPop .28s cubic-bezier(.22,1,.36,1) .38s both; transform-origin: center; }
 /* CTA under the row */
 .how3-cta { display: flex; justify-content: center; margin-top: 40px; }
 @media (prefers-reduced-motion: reduce) {
   .hcard, .hcard-desc, .hcard-ico, .hmock { transition: none; }
   .hcard.is-active .hcard-prog i { animation: none; width: 100%; }
+  .hcard.is-active .hmock *, .hcard.is-active .hm-pin, .hcard.is-active .hm-sent, .hcard.is-active .hm-rows .err {
+    animation: none !important; opacity: 1 !important; transform: none !important;
+  }
 }
 @media (max-width: 860px) {
   .how3 { flex-direction: column; gap: 12px; }
