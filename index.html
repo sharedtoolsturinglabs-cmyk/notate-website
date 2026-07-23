@@ -4,7 +4,7 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Notate — Point. Comment. Log.</title>
+<title>Notate — Visual Bug Reporting &amp; UI Feedback for Jira, Linear</title>
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/svg+xml" href="/icon.svg" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -12,17 +12,52 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 
-<meta name="description" content="Capture UI issues directly in your browser and push them to Linear or Jira in seconds. Free to start — $7/mo for unlimited.">
+<meta name="description" content="Pin the exact element, add a note, and push a contextualized bug report to Jira or Linear in seconds. Works on staging, localhost and internal tools. Free for 25 issues.">
+<link rel="canonical" href="https://notate.live/">
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Notate — Point. Comment. Log." />
-<meta property="og:description" content="Capture UI issues directly in your browser and push them to Linear or Jira in seconds. Free to start — $7/mo for unlimited." />
+<meta property="og:title" content="Notate — Visual Bug Reporting &amp; UI Feedback for Jira, Linear" />
+<meta property="og:description" content="Pin the exact element, add a note, and push a contextualized bug report to Jira or Linear in seconds. Works on staging, localhost and internal tools. Free for 25 issues." />
 <meta property="og:image" content="https://notate.live/og-image.png" />
+<meta property="og:image:alt" content="Notate — pin a UI bug and push it to Jira or Linear" />
 <meta property="og:url" content="https://notate.live/" />
 <meta property="og:site_name" content="Notate" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Notate — Point. Comment. Log." />
-<meta name="twitter:description" content="Capture UI issues directly in your browser and push them to Linear or Jira in seconds. Free to start — $7/mo for unlimited." />
+<meta name="twitter:title" content="Notate — Visual Bug Reporting &amp; UI Feedback for Jira, Linear" />
+<meta name="twitter:description" content="Pin the exact element, add a note, and push a contextualized bug report to Jira or Linear in seconds. Works on staging, localhost and internal tools. Free for 25 issues." />
 <meta name="twitter:image" content="https://notate.live/og-image.png" />
+
+<!-- TODO: add Crunchbase, LinkedIn and Wikidata URLs to sameAs once those profiles exist. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Notate",
+  "legalName": "Turinglabs",
+  "url": "https://notate.live/",
+  "logo": "https://notate.live/icon-512.png",
+  "email": "notate.developer@gmail.com",
+  "sameAs": [
+    "https://x.com/notate_app",
+    "https://www.reddit.com/r/notate_app/",
+    "https://discord.gg/2hC7Y22J"
+  ]
+}
+</script>
+<!-- TODO: set "url" to the Chrome Web Store listing once the correct listing URL is
+     confirmed (two conflicting extension IDs exist in the repo — see Task 8). -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Notate",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Chrome",
+  "offers": [
+    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Pro, billed monthly", "price": "7.00", "priceCurrency": "USD" }
+  ]
+}
+</script>
 
 <style>
 /* ==================================================================
@@ -832,8 +867,6 @@ table.cmp {
 .plan-cta { margin-top: auto; justify-content: center; }
 .plan-pro .plan-cta { background: #fff; color: var(--ink); }
 .plan-pro .plan-cta:hover { box-shadow: 0 10px 30px -10px rgba(255,255,255,0.25); }
-.plan-sub { font-size: 11.5px; color: var(--gray-2); text-align: center; margin-top: -12px; }
-.plan-pro .plan-sub { color: var(--dk-dim); }
 
 /* toggle */
 .ptoggle {
@@ -942,7 +975,7 @@ footer {
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
-.foot-col h5 {
+.foot-col h3 {
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 600;
@@ -1198,7 +1231,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 <section class="hero" data-screen-label="Hero">
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span> Chrome extension · Free to start</span>
-    <h1>Turn screenshots into JIRA tickets <span class="accent">in seconds.</span></h1>
+    <h1>Turn UI bugs into Jira tickets <span class="accent">in seconds.</span></h1>
     <p class="hero-sub">Capture UI issues directly in your browser and push them to Linear or Jira in seconds. No calls, no screenshots in Slack, no follow-up threads. <strong>Free to start — 25 issues, no card required.</strong></p>
     <div class="cta-row">
       <a class="btn btn-dark" href="https://tinyurl.com/notatelive" target="_blank" rel="noopener">
@@ -1377,7 +1410,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       <div class="step">
         <div class="step-n">02</div>
         <h3>Context is captured automatically</h3>
-        <p>No more "what browser were you on?" Notate silently records everything a developer needs to reproduce the issue — before you even type a word.</p>
+        <p>No more "what browser were you on?" Notate captures everything a developer needs to reproduce the issue — before you even type a word.</p>
         <ul>
           <li>Browser, OS, and version</li>
           <li>Full URL with all query parameters</li>
@@ -1414,7 +1447,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       <div class="feat">
         <span class="mlabel">Speed <span class="mchip">client-side</span></span>
         <h3>Spotted to filed, in under 5 seconds.</h3>
-        <p>Entirely client-side. No backend round trips. No AI in the hot path. Just a side panel that opens the instant you call it.</p>
+        <p>No AI in the hot path, no heavy framework in your tabs. Just a side panel that opens the instant you call it.</p>
         <div class="feat-body">
           <div class="slog">
             <div class="row"><span>Pin element</span><span class="t">0ms</span></div>
@@ -1423,7 +1456,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
             <div class="row"><span class="done">✓ Filed to Linear</span><span class="t">+240ms</span></div>
           </div>
           <div class="sstat">
-            <span class="val" id="statTime">4.24s</span>
+            <span class="val" id="statTime">&lt;5s</span>
             <span class="lbl">start to filed</span>
           </div>
         </div>
@@ -1460,9 +1493,9 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 
       <!-- Size -->
       <div class="feat">
-        <span class="mlabel">Footprint <span class="mchip">0% CPU idle</span></span>
+        <span class="mlabel">Footprint <span class="mchip">Idle until you call it</span></span>
         <h3>Smaller than a stock photo.</h3>
-        <p>No frameworks in your tabs. No tracking scripts. A quiet extension that wakes up when you call it.</p>
+        <p>No frameworks in your tabs. No tracking scripts in the pages you review. A quiet extension that wakes up when you call it.</p>
         <div class="feat-body">
           <div class="big-stat">
             <span class="n" id="statKb">900</span><span class="u">KB</span><span class="c">installed</span>
@@ -1472,11 +1505,11 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
             <div class="track"><div class="fill me" style="width:5%;"></div></div>
           </div>
           <div class="bar-row">
-            <div class="top"><span>Avg stock photo</span><span>3.5 MB</span></div>
+            <div class="top"><span>Stock photo, approx.</span><span>3.5 MB</span></div>
             <div class="track"><div class="fill" style="width:20%;"></div></div>
           </div>
           <div class="bar-row">
-            <div class="top"><span>Typical web app</span><span>18+ MB</span></div>
+            <div class="top"><span>Web app, approx.</span><span>18+ MB</span></div>
             <div class="track"><div class="fill" style="width:100%;"></div></div>
           </div>
         </div>
@@ -1508,14 +1541,14 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
   <div class="wrap">
     <div class="section-head">
       <span class="mlabel">Privacy</span>
-      <h2>Your data stays local by default.<br><span class="dim">Cloud is opt-in.</span></h2>
-      <p>Everything stays on your device until you press Send. No Notate server in the path — ever.</p>
+      <h2>Your pins stay on your device.<br><span class="dim">Cloud sync is opt-in.</span></h2>
+      <p>Notate works locally by default — pins, screenshots and context live in your browser until you press Send. Turn on a cloud workspace and drafts sync so your team can see them before they're filed.</p>
     </div>
 
     <div class="priv-flow">
       <div class="priv-box">
         <div class="hd">Your browser</div>
-        <div class="sub">STAYS LOCAL UNTIL YOU SEND</div>
+        <div class="sub">LOCAL MODE — STAYS IN YOUR BROWSER UNTIL YOU SEND</div>
         <div class="priv-chips">
           <span class="priv-chip">pin + element</span>
           <span class="priv-chip">screenshot</span>
@@ -1541,13 +1574,13 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 
     <div class="priv-never">
       <span class="x">✕</span>
-      <span>Notate servers are <b>never</b> in the data path</span>
+      <span>In local mode, tickets go straight from your browser to your tracker.</span>
     </div>
 
     <div class="priv-assure">
-      <span>No server-side storage by default</span>
+      <span>Local-first by default</span>
       <span>Encrypted in transit</span>
-      <span>Scoped to your own auth</span>
+      <span>Pushed with your own OAuth token</span>
     </div>
   </div>
 </section>
@@ -1614,14 +1647,14 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
             <td><span class="y">✓</span></td>
             <td><span class="n">✕</span></td>
           </tr>
+          <!-- TODO: replacement row pending verification against each vendor's
+               current public docs. Do not publish until every cell is verified and
+               screenshotted with a date.
           <tr>
-            <td>Zero data stored on vendor servers</td>
-            <td class="us"><span class="y">✓</span></td>
-            <td><span class="n">✕</span></td>
-            <td><span class="n">✕</span></td>
-            <td><span class="n">✕</span></td>
-            <td><span class="n">✕</span></td>
+            <td>No code injected into the pages you review</td>
+            <td>✓</td><td>✕</td><td>✕</td><td>✓</td><td>✕</td>
           </tr>
+          -->
         </tbody>
       </table>
     </div>
@@ -1680,7 +1713,6 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
           <li>Cancel anytime</li>
         </ul>
         <a class="btn plan-cta" href="https://tinyurl.com/notatelive" target="_blank" rel="noopener">Get started</a>
-        <div class="plan-sub">Install free · upgrade in Settings → Billing</div>
       </div>
 
     </div>
@@ -1702,7 +1734,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       </details>
       <details class="faq-item">
         <summary>Where does my data go?<span class="plus" aria-hidden="true">+</span></summary>
-        <div class="faq-a">Straight from your browser into Linear or Jira, over your own auth. We don't read your pages. We don't store pins in our cloud. We don't keep a copy in your browser either.</div>
+        <div class="faq-a">In local mode, pins and screenshots stay in your browser's storage and go straight to Linear or Jira over your own OAuth token when you press Send. If you turn on a cloud workspace, drafts sync to our servers so your team can see them before they're pushed. Our privacy policy sets out exactly what's stored and for how long.</div>
       </details>
       <details class="faq-item">
         <summary>Does it work on internal tools and localhost?<span class="plus" aria-hidden="true">+</span></summary>
@@ -1769,28 +1801,28 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       </div>
       <div class="foot-right">
         <div class="foot-col">
-          <h5>Product</h5>
+          <h3>Product</h3>
           <a href="#how">How it works</a>
           <a href="#features">Features</a>
           <a href="#faq">FAQ</a>
           <a href="/changelog/">Changelog</a>
         </div>
         <div class="foot-col">
-          <h5>Compare</h5>
+          <h3>Compare</h3>
           <a href="/compare/marker-io/">Marker.io alternative</a>
           <a href="/compare/bugherd/">BugHerd alternative</a>
           <a href="/compare/jam/">Jam.dev alternative</a>
           <a href="/compare/pastel/">Pastel alternative</a>
         </div>
         <div class="foot-col">
-          <h5>Community</h5>
+          <h3>Community</h3>
           <a href="https://discord.gg/2hC7Y22J" target="_blank" rel="noopener">Discord</a>
           <a href="https://www.reddit.com/r/notate_app/" target="_blank" rel="noopener">Reddit</a>
           <a href="https://x.com/notate_app" target="_blank" rel="noopener">Twitter / X</a>
           <a href="mailto:notate.developer@gmail.com">notate.developer@gmail.com</a>
         </div>
         <div class="foot-col">
-          <h5>Legal</h5>
+          <h3>Legal</h3>
           <a href="/privacy/">Privacy</a>
           <a href="/terms/">Terms</a>
           <a href="/support/">Support</a>
@@ -1886,19 +1918,16 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
     }
     requestAnimationFrame(frame);
   }
-  var statTime = document.getElementById('statTime');
   var statKb = document.getElementById('statKb');
-  if (!reduced && hasIO && (statTime || statKb)) {
+  if (!reduced && hasIO && statKb) {
     var sio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (!e.isIntersecting) return;
-        if (e.target === statTime) countUp(statTime, 4.24, 2, 's', 900);
         if (e.target === statKb) countUp(statKb, 900, 0, '', 900);
         sio.unobserve(e.target);
       });
     }, { threshold: 0.6 });
-    if (statTime) sio.observe(statTime);
-    if (statKb) sio.observe(statKb);
+    sio.observe(statKb);
   }
 
   // Hero demo loop: pin drops → comment types → ticket cascades → success
