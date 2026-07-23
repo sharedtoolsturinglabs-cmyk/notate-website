@@ -617,42 +617,125 @@ header {
 /* ==================================================================
    How it works
    ================================================================== */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+/* Expanding 3-step accordion */
+.how3 { display: flex; gap: 14px; align-items: stretch; }
+.hcard {
+  position: relative; flex: 1 1 0; min-width: 0;
+  background: var(--panel); border: 1px solid var(--hair);
+  border-radius: 20px; overflow: hidden; cursor: pointer;
+  transition: flex-grow .55s cubic-bezier(.22,1,.36,1), background .4s ease, border-color .4s ease, box-shadow .4s ease;
 }
-.step {
-  padding: 4px 28px 8px;
+.hcard:not(.is-active):hover { border-color: var(--hair); background: #fff; }
+.hcard.is-active {
+  flex-grow: 2.7; cursor: default;
+  background: #f2f0ff; border-color: rgba(58,30,253,0.14);
+  box-shadow: 0 12px 40px -18px rgba(58,30,253,0.35);
 }
-.step-n {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--gray-2);
-  margin-bottom: 20px;
+/* progress bar (drives auto-advance via animationend) */
+.hcard-prog { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; z-index: 3; }
+.hcard-prog i { display: block; height: 100%; width: 0; background: var(--indigo); border-radius: 0 3px 3px 0; }
+.hcard.is-active .hcard-prog i { animation: how3fill 4s linear forwards; }
+@keyframes how3fill { from { width: 0; } to { width: 100%; } }
+.how3:hover .hcard.is-active .hcard-prog i,
+.how3.paused .hcard.is-active .hcard-prog i { animation-play-state: paused; }
+/* header */
+.hcard-tab {
+  display: flex; align-items: flex-start; gap: 13px; width: 100%;
+  padding: 24px 22px 0; border: 0; background: none; cursor: inherit;
+  text-align: left; color: var(--ink); font-family: var(--font);
 }
-.step h3 { margin-bottom: 10px; }
-.step p { font-size: 14.5px; color: var(--gray); margin-bottom: 18px; }
-.step ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
-.step li {
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-  font-size: 13.5px;
-  color: var(--ink-2);
+.hcard-ico {
+  width: 36px; height: 36px; flex-shrink: 0; border-radius: 11px;
+  display: grid; place-items: center; background: var(--bg);
+  border: 1px solid var(--hair); color: var(--ink-2);
+  transition: background .35s, border-color .35s, color .35s;
 }
-.step li::before {
-  content: '✓';
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink);
-  flex-shrink: 0;
+.hcard.is-active .hcard-ico { background: #fff; border-color: rgba(58,30,253,0.2); color: var(--indigo); }
+.hcard-ico svg { width: 18px; height: 18px; }
+.hcard-tt { font-size: 18px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.22; padding-top: 5px; }
+/* panel */
+.hcard-panel { padding: 0 22px 22px; }
+.hcard-desc {
+  font-size: 14px; line-height: 1.58; color: var(--gray);
+  max-width: 44ch; opacity: 0; max-height: 0; margin: 0;
+  transition: opacity .4s ease, max-height .5s ease, margin .4s ease;
+}
+.hcard.is-active .hcard-desc { opacity: 1; max-height: 240px; margin: 15px 0 18px; }
+/* mockups */
+.hmock {
+  min-width: 430px; border-radius: 14px; border: 1px solid var(--hair);
+  background: #fff; overflow: hidden; margin-top: 4px;
+  transition: opacity .45s ease, filter .45s ease;
+}
+.hcard:not(.is-active) .hmock { opacity: .4; filter: saturate(.55); }
+.hm-bar {
+  display: flex; align-items: center; gap: 6px; height: 30px;
+  padding: 0 12px; border-bottom: 1px solid var(--hair-2); background: var(--bg);
+}
+.hm-bar span { width: 8px; height: 8px; border-radius: 50%; background: var(--hair); }
+.hm-bar em {
+  margin-left: 8px; font-family: var(--mono); font-size: 10.5px;
+  font-style: normal; letter-spacing: 0.02em; color: var(--gray-2);
+}
+/* mock 1: pin */
+.hm-pinbody { position: relative; height: 168px; padding: 18px; }
+.hm-wire { position: absolute; inset: 18px; border-radius: 8px;
+  background: repeating-linear-gradient(180deg, var(--hair-2) 0 1px, transparent 1px 22px); }
+.hm-btn {
+  position: absolute; left: 34px; top: 92px; padding: 9px 20px;
+  border-radius: 9px; background: var(--ink); color: #fff;
+  font-size: 12.5px; font-weight: 600; box-shadow: 0 0 0 2px rgba(58,30,253,0.5), 0 0 0 5px rgba(58,30,253,0.14);
+}
+.hm-pin {
+  position: absolute; left: 128px; top: 78px; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--indigo); color: #fff;
+  display: grid; place-items: center; font-size: 12px; font-weight: 700;
+  border: 2px solid #fff; box-shadow: 0 3px 10px rgba(58,30,253,0.45);
+}
+.hm-sel {
+  position: absolute; left: 34px; top: 132px; font-family: var(--mono);
+  font-size: 11px; color: var(--indigo); background: rgba(58,30,253,0.08);
+  padding: 3px 8px; border-radius: 6px;
+}
+/* mock 2: context rows */
+.hm-rows { list-style: none; padding: 12px 14px; display: flex; flex-direction: column; gap: 0; }
+.hm-rows li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 2px; border-bottom: 1px solid var(--hair-2);
+  font-family: var(--mono); font-size: 12px;
+}
+.hm-rows li:last-child { border-bottom: 0; }
+.hm-rows b { font-weight: 500; color: var(--gray); }
+.hm-rows span { color: var(--ink-2); }
+.hm-rows .err { color: var(--red); }
+/* mock 3: filed ticket */
+.hm-filed { padding: 16px; }
+.hm-tk-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; }
+.hm-lin { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 600; }
+.hm-lin svg { width: 15px; height: 15px; }
+.hm-sent { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--green); }
+.hm-sent svg { width: 13px; height: 13px; }
+.hm-tk-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 12px; }
+.hm-tk-shot { height: 70px; border-radius: 9px; border: 1px solid var(--hair-2);
+  background: repeating-linear-gradient(135deg, var(--bg) 0 8px, #fff 8px 16px); margin-bottom: 12px; }
+.hm-chips { display: flex; gap: 7px; }
+.hm-chips span {
+  font-size: 11px; font-weight: 600; color: var(--ink-2);
+  padding: 4px 11px; border-radius: 7px; border: 1px solid var(--hair); background: var(--bg);
+}
+.hm-chips span:first-child { color: var(--indigo); border-color: rgba(58,30,253,0.22); background: rgba(58,30,253,0.05); }
+/* CTA under the row */
+.how3-cta { display: flex; justify-content: center; margin-top: 40px; }
+@media (prefers-reduced-motion: reduce) {
+  .hcard, .hcard-desc, .hcard-ico, .hmock { transition: none; }
+  .hcard.is-active .hcard-prog i { animation: none; width: 100%; }
 }
 @media (max-width: 860px) {
-  .steps { grid-template-columns: 1fr; gap: 30px; }
-  .step { padding: 4px; }
+  .how3 { flex-direction: column; gap: 12px; }
+  .hcard, .hcard.is-active { flex: none; }
+  .hmock { min-width: 0; }
+  .hcard:not(.is-active) .hcard-panel { display: none; }
+  .hcard.is-active .hcard-desc { max-height: none; }
 }
 
 /* ==================================================================
@@ -1720,38 +1803,71 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
       <p>Designed to disappear once you've started using it.</p>
     </div>
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-n">01</div>
-        <h3>Point at exactly what's broken</h3>
-        <p>Click anywhere on the page to place a pin. Notate records the element, its CSS selector, and coordinates — so developers know exactly where to look without a single back-and-forth.</p>
-        <ul>
-          <li>Click-to-pin on any DOM element</li>
-          <li>Freehand highlight for area annotations</li>
-          <li>Multiple pins per report</li>
-        </ul>
-      </div>
-      <div class="step">
-        <div class="step-n">02</div>
-        <h3>Context is captured automatically</h3>
-        <p>No more "what browser were you on?" Notate captures everything a developer needs to reproduce the issue — before you even type a word.</p>
-        <ul>
-          <li>Browser, OS, and version</li>
-          <li>Full URL with all query parameters</li>
-          <li>Viewport size and device type</li>
-          <li>Console errors at time of capture</li>
-        </ul>
-      </div>
-      <div class="step">
-        <div class="step-n">03</div>
-        <h3>One click to Linear or Jira</h3>
-        <p>Choose your tracker and hit send. Notate creates a complete, well-structured ticket with the annotated screenshot, your comment, labels, and all captured context — no copy-pasting required.</p>
-        <ul>
-          <li>Native Linear &amp; Jira integrations</li>
-          <li>Set project, priority, and assignee</li>
-          <li>Screenshot auto-attached as an asset</li>
-        </ul>
-      </div>
+    <div class="how3" id="how3">
+      <!-- Step 1 -->
+      <article class="hcard is-active" data-i="0">
+        <span class="hcard-prog"><i></i></span>
+        <button class="hcard-tab" aria-expanded="true">
+          <span class="hcard-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>
+          <span class="hcard-tt">Point at exactly what's broken</span>
+        </button>
+        <div class="hcard-panel">
+          <p class="hcard-desc">Click anywhere on the page to drop a pin. Notate records the element, its CSS selector, and coordinates — so developers know exactly where to look, without a single round of back-and-forth.</p>
+          <div class="hmock">
+            <div class="hm-bar"><span></span><span></span><span></span><em>app.acme.com/checkout</em></div>
+            <div class="hm-pinbody">
+              <div class="hm-wire"></div>
+              <div class="hm-btn">Checkout</div>
+              <div class="hm-pin">1</div>
+              <div class="hm-sel">button.checkout-cta</div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <!-- Step 2 -->
+      <article class="hcard" data-i="1">
+        <span class="hcard-prog"><i></i></span>
+        <button class="hcard-tab" aria-expanded="false">
+          <span class="hcard-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M21 16v3a2 2 0 0 1-2 2h-3"/></svg></span>
+          <span class="hcard-tt">Context is captured automatically</span>
+        </button>
+        <div class="hcard-panel">
+          <p class="hcard-desc">No more "what browser were you on?" Notate captures everything a developer needs to reproduce the issue — before you type a single word.</p>
+          <div class="hmock">
+            <div class="hm-bar"><span></span><span></span><span></span><em>captured automatically</em></div>
+            <ul class="hm-rows">
+              <li><b>Browser</b><span>Chrome 138 · macOS</span></li>
+              <li><b>Viewport</b><span>1440 × 900</span></li>
+              <li><b>URL</b><span>/checkout?step=2</span></li>
+              <li><b>Console</b><span class="err">2 errors captured</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <!-- Step 3 -->
+      <article class="hcard" data-i="2">
+        <span class="hcard-prog"><i></i></span>
+        <button class="hcard-tab" aria-expanded="false">
+          <span class="hcard-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></span>
+          <span class="hcard-tt">One click to Linear or Jira</span>
+        </button>
+        <div class="hcard-panel">
+          <p class="hcard-desc">Choose your tracker and hit send. Notate files a complete, well-structured ticket — annotated screenshot, your comment, labels, and every captured detail. No copy-pasting.</p>
+          <div class="hmock hm-filed">
+            <div class="hm-tk-top">
+              <span class="hm-lin"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.9 14.6a9.6 9.6 0 0 0 6.5 6.5L2.9 14.6ZM2.1 10.9 13.1 21.9a9.6 9.6 0 0 0 2.6-.7L2.8 8.3a9.6 9.6 0 0 0-.7 2.6ZM3.6 6.4 17.6 20.4a9.7 9.7 0 0 0 1.8-1.4L5 5a9.7 9.7 0 0 0-1.4 1.8ZM6.4 3.6 20.4 17.6A9.6 9.6 0 0 0 6.4 3.6Z"/></svg>LIN-248</span>
+              <span class="hm-sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sent</span>
+            </div>
+            <div class="hm-tk-title">Checkout button misaligned on mobile</div>
+            <div class="hm-tk-shot"></div>
+            <div class="hm-chips"><span>Linear</span><span>Jira</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="how3-cta">
+      <a class="btn btn-dark" href="https://chromewebstore.google.com/detail/mmfaholnifmoeddnfleiajlckhenbhno" target="_blank" rel="noopener">Add to Chrome — it's free</a>
     </div>
   </div>
 </section>
@@ -2200,7 +2316,7 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
 
   // Staggered scroll reveals
   if (!reduced && hasIO) {
-    var groups = ['.problems-grid > .problem', '.steps > .step', '.feat-grid > .feat', '.plans > .plan', '.faq-list > .faq-item'];
+    var groups = ['.problems-grid > .problem', '.how3 > .hcard', '.feat-grid > .feat', '.plans > .plan', '.faq-list > .faq-item'];
     var rio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (e.isIntersecting || e.boundingClientRect.top < 0) { e.target.classList.add('rv-in'); rio.unobserve(e.target); }
@@ -2424,6 +2540,47 @@ html.js .rv.rv-in { opacity: 1; transform: none; }
     } else {
       settleEnd();
     }
+  }
+})();
+
+// How-it-works: expanding 3-step, auto-advancing via the progress animation
+(function () {
+  var how3 = document.getElementById('how3');
+  if (!how3) return;
+  var cards = [].slice.call(how3.querySelectorAll('.hcard'));
+  if (!cards.length) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur = 0;
+
+  function activate(i) {
+    if (i === cur && cards[i].classList.contains('is-active')) return;
+    cards.forEach(function (c, k) {
+      var on = k === i;
+      c.classList.toggle('is-active', on);
+      var tab = c.querySelector('.hcard-tab');
+      if (tab) tab.setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
+    cur = i;
+  }
+
+  // Advance when the active card's progress bar finishes filling.
+  how3.addEventListener('animationend', function (e) {
+    if (reduced || e.animationName !== 'how3fill') return;
+    activate((cur + 1) % cards.length);
+  });
+
+  // Click / keyboard to jump to a step.
+  cards.forEach(function (c, i) {
+    var tab = c.querySelector('.hcard-tab');
+    if (tab) tab.addEventListener('click', function () { activate(i); });
+  });
+
+  // Pause the cycle while the section is off-screen.
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { how3.classList.toggle('paused', !e.isIntersecting); });
+    }, { threshold: 0.25 });
+    io.observe(how3);
   }
 })();
 
