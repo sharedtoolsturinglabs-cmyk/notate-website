@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <!-- notate.live is GitHub Pages, which cannot set response headers — so the
+       policy ships in the page. Two caveats vs. a real header, both noted in
+       docs/REPLAY_VIEWER_DEPLOY.md: `frame-ancestors` is ignored in a meta CSP
+       (the frame-buster below stands in for it), and `Cache-Control: no-store`
+       cannot be expressed at all.
+
+       connect-src is the load-bearing directive: it pins network access to the
+       replay bucket, so even if the in-page allowlist were bypassed the browser
+       refuses the request. img/style/font/media allow https: because an rrweb
+       replay re-loads the captured page's OWN assets from their original URLs
+       (inlineImages is off at record time) — locking those to 'self' renders
+       every replay broken. -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'none';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https:;
+    img-src 'self' data: blob: https:;
+    font-src 'self' data: https:;
+    media-src 'self' data: blob: https:;
+    connect-src https://gwqxaxtawjxcesamesyx.supabase.co;
+    base-uri 'none';
+    form-action 'none';
+  " />
+  <meta name="referrer" content="no-referrer" />
+  <title>Notate Rewind replay</title>
+  <link rel="icon" href="data:," />
+  <!--
+    Standalone viewer for notate.live/replay/.
+
+    ─ SECURITY ─────────────────────────────────────────────────────────────
+    The previous version of this page was an open fetch proxy: it took a URL
+    straight from `?t=` and fetched it, with no allowlist, on Notate's own
+    origin. It also pulled rrweb-player and fflate from cdn.jsdelivr.net with
+    no SRI — three unpinned third-party scripts able to read whatever this page
+    reads. A pre-flight audit flagged it as "deploying this would create a
+    hole, not fix one", and it was never deployed.
+
+    This version closes both:
+
+      1. ORIGIN ALLOWLIST. `?t=` is parsed as a URL and must match the Supabase
+         storage origin AND the rewind-replays object path. Anything else is
+         refused before a request is made, so the page cannot be used to fetch
+         arbitrary URLs from notate.live's origin.
+
+      2. NO THIRD-PARTY SCRIPT. rrweb arrives via player.js — the extension's
+         OWN bundle (replay-inline/player.js), copied in at deploy time by
+         scripts/build-replay-viewer.mjs. Nothing is fetched from a CDN, so
+         there is no supply chain to pin. It also means the hosted viewer and
+         the in-extension preview are literally the same player.
+
+    The policy itself is the <meta> block above — notate.live is GitHub Pages
+    and cannot send response headers. See docs/REPLAY_VIEWER_DEPLOY.md.
+  -->
+  <style>
+    :root { --bg:#0f0f0f; --card:#17171a; --ink:#f5f5f5; --muted:#a1a1aa; --line:#27272a; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 32px 20px; background: var(--bg); color: var(--ink);
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    header { display: flex; align-items: baseline; gap: 10px; width: 100%; max-width: 980px; }
+    h1 { font-size: 15px; font-weight: 600; margin: 0; }
+    .meta { display: none; gap: 12px; font-size: 12px; color: var(--muted); }
+    #warn-banner {
+      display: none; width: 100%; max-width: 980px; padding: 10px 12px;
+      border: 1px solid #6b5300; background: #2a2314; color: #f0d894;
+      border-radius: 8px; font-size: 13px;
+    }
+    #player-shell {
+      width: 100%; max-width: 980px; min-height: 200px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 13px; padding: 40px 20px; text-align: center;
+    }
+    footer { max-width: 980px; font-size: 12px; color: var(--muted); }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Session replay</h1>
+    <span class="meta" id="meta">
+      <span id="meta-duration"></span>
+      <span id="meta-captured"></span>
+    </span>
+  </header>
+
+  <div id="warn-banner">
+    <strong>Input masking was off</strong> during this capture, so typed text may
+    be visible in the replay. Treat this page as sensitive.
+  </div>
+
+  <div id="player-shell">Loading replay…</div>
+
+  <footer>Captured with Notate.</footer>
+
+  <script>
+    // Stand-in for `frame-ancestors 'none'`, which a meta CSP cannot express
+    // and GitHub Pages cannot send as a header. Stops the replay (and its
+    // capability URL) being framed by another site.
+    if (window.top !== window.self) {
+      try { window.top.location = window.self.location; } catch (_) {
+        document.documentElement.innerHTML = "";
+      }
+    }
+
+    // ── Allowlist ─────────────────────────────────────────────────────────
+    // Only Supabase-signed rewind-replay objects. Everything else is refused
+    // WITHOUT a network request — this is what stops the page being used as a
+    // fetch proxy for arbitrary URLs on notate.live's origin.
+    var STORAGE_ORIGIN = "https://gwqxaxtawjxcesamesyx.supabase.co";
+    var OBJECT_PREFIX = "/storage/v1/object/sign/rewind-replays/";
+
+    function isAllowedReplayUrl(raw) {
+      var u;
+      try { u = new URL(raw); } catch (_) { return false; }
+      if (u.protocol !== "https:") return false;
+      if (u.origin !== STORAGE_ORIGIN) return false;
+      // startsWith on the PARSED pathname — not the raw string — so
+      // "/x/../storage/..." and friends can't sneak past.
+      return u.pathname.startsWith(OBJECT_PREFIX);
+    }
+
+    function showError(msg) {
+      var shell = document.getElementById("player-shell");
+      shell.textContent = msg;
+    }
+
+    function toBase64(bytes) {
+      var bin = "", CHUNK = 0x8000;
+      for (var i = 0; i < bytes.length; i += CHUNK) {
+        bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+      }
+      return btoa(bin);
+    }
+
+    async function boot() {
+      var token = new URLSearchParams(location.search).get("t");
+      if (!token) { showError("Missing replay link."); return; }
+
+      var url;
+      try { url = decodeURIComponent(token); }
+      catch (_) { showError("This replay link is malformed."); return; }
+
+      if (!isAllowedReplayUrl(url)) {
+        showError("This replay link isn't valid. Links must point at Notate's replay storage.");
+        return;
+      }
+
+      var resp;
+      try { resp = await fetch(url); }
+      catch (_) {
+        showError("Couldn't reach the replay storage. Check your connection and try again.");
+        return;
+      }
+      if (!resp.ok) {
+        showError(resp.status === 400 || resp.status === 403
+          ? "This replay link has expired."
+          : "Couldn't load this replay (" + resp.status + ").");
+        return;
+      }
+
+      var bytes;
+      try { bytes = new Uint8Array(await resp.arrayBuffer()); }
+      catch (_) { showError("Couldn't read this replay."); return; }
+
+      // Peek at the payload for the masking banner + meta. The player decodes
+      // it again itself; doing it twice is cheaper than inventing a second
+      // hand-off path. DecompressionStream is native — no fflate, no CDN.
+      var payload = null;
+      try {
+        var json = await new Response(
+          new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))
+        ).text();
+        payload = JSON.parse(json);
+      } catch (_) {
+        showError("This replay is corrupted or in an unrecognised format.");
+        return;
+      }
+
+      var events = Array.isArray(payload) ? payload : (payload && payload.events);
+      if (!Array.isArray(events) || events.length === 0) {
+        showError("This replay has no captured activity to play back.");
+        return;
+      }
+      if (payload && payload.maskInputs === false) {
+        document.getElementById("warn-banner").style.display = "block";
+      }
+
+      var meta = document.getElementById("meta");
+      meta.style.display = "flex";
+      var seconds = Math.max(0, Math.round(
+        (events[events.length - 1].timestamp - events[0].timestamp) / 1000));
+      document.getElementById("meta-duration").textContent = seconds + "s captured";
+      if (payload && payload.capturedAt) {
+        document.getElementById("meta-captured").textContent =
+          new Date(payload.capturedAt).toLocaleString();
+      }
+
+      // Hand off to the extension's own player via the SAME standalone contract
+      // the attached .html file uses (see replay-inline/src/index.js): a JSON
+      // tag holding the gzipped payload, read once the bundle loads.
+      var shell = document.getElementById("player-shell");
+      shell.textContent = "";
+      shell.style.padding = "0";
+      shell.id = "player-shell";
+      var root = document.createElement("div");
+      root.id = "root";
+      shell.appendChild(root);
+
+      var tag = document.createElement("script");
+      tag.type = "application/json";
+      tag.id = "__notate_replay__";
+      tag.textContent = JSON.stringify({ gz: toBase64(bytes) }).replace(/</g, "\\u003c");
+      document.body.appendChild(tag);
+
+      var s = document.createElement("script");
+      s.src = "player.js";              // same-origin, copied in at deploy time
+      s.onerror = function () { showError("Couldn't load the replay player."); };
+      document.body.appendChild(s);
+    }
+
+    boot();
+  </script>
+</body>
+</html>
